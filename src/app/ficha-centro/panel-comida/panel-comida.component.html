@@ -1,0 +1,52 @@
+@if (comida().platos.length > 0) {
+  <h3 class="mb-1 text-lg font-medium">Las comidas</h3>
+  <p class="mb-3 text-sm text-texto-secundario">
+    Fotos publicadas por el centro hasta el
+    <time [attr.datetime]="comida().ultimaPublicacion">{{ fechaLarga(comida().ultimaPublicacion!) }}</time>
+  </p>
+  <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+    @for (p of comida().platos; track p.id) {
+      <figure>
+        <img [src]="p.url" [alt]="altFoto(p.momento, p.texto)" class="aspect-[4/3] w-full rounded object-cover" loading="lazy" />
+        <figcaption class="mt-1 text-sm text-texto-secundario">
+          @if (p.momento) {
+            {{ etiquetaMomento[p.momento] }} ·
+          }
+          <time [attr.datetime]="p.fecha">{{ fechaLarga(p.fecha) }}</time>
+          @if (p.texto) {
+            · {{ p.texto }}
+          }
+        </figcaption>
+      </figure>
+    }
+  </div>
+}
+
+@if (comida().cocina.length > 0) {
+  <h3 class="mb-2 mt-6 text-lg font-medium">La cocina</h3>
+  <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+    @for (url of comida().cocina; track url) {
+      <img [src]="url" [alt]="'Cocina — ' + nombreCentro()" class="aspect-[4/3] w-full rounded object-cover" loading="lazy" />
+    }
+  </div>
+}
+
+@if (comida().menus.length > 0) {
+  <h3 class="mb-2 mt-6 text-lg font-medium">Los menús</h3>
+  <ul class="space-y-2">
+    @for (m of comida().menus; track m.id) {
+      <li>
+        <a [href]="m.pdf" target="_blank" rel="noopener" class="text-enlace underline">
+          {{ textoMenu(m.desde, m.hasta) }} (PDF)
+        </a>
+      </li>
+    }
+  </ul>
+}
+
+<p class="mt-4 text-sm text-texto-secundario">
+  Publicado por el centro en
+  <a href="https://aquisecomebien.inforesidencias.com" target="_blank" rel="noopener" class="text-enlace underline">
+    Aquí se come bien
+  </a>.
+</p>

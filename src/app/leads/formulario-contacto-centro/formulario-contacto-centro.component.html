@@ -1,0 +1,83 @@
+@if (estado() === 'ok') {
+  <div class="rounded border border-borde bg-superficie p-4" role="status">
+    <p class="font-medium">La información de contacto ha sido enviada correctamente.</p>
+    <p class="text-sm text-texto-secundario">Gracias por confiar en inforesidencias.com. {{ mensaje() }}</p>
+  </div>
+} @else {
+  <form (submit)="enviar($event)" id="contactar" class="rounded border border-borde p-4">
+    <h2 class="mb-3 text-xl font-semibold">Pedir información a {{ nombreCentro() }}</h2>
+
+    <label class="mb-1 block text-sm font-medium" for="motivo-contacto">¿Qué necesitas?</label>
+    <select id="motivo-contacto" name="motivo" class="mb-3 w-full rounded border border-borde-input px-3 py-2" [value]="motivo()" (change)="onMotivo($event)">
+      <option value="Residencia">Busco {{ tipologia().toLowerCase() }} para un familiar o para mí</option>
+      <option value="Trabajar">Busco trabajo</option>
+      <option value="Servicios">Quiero ofrecer mis servicios y/o productos</option>
+    </select>
+
+    @if (motivo() === 'Trabajar') {
+      <p class="mb-3 text-sm">
+        Las ofertas de empleo están en
+        <a class="text-enlace underline" href="https://trabajo.inforesidencias.com" rel="noopener">trabajo.inforesidencias.com</a>.
+      </p>
+    }
+    @if (motivo() === 'Servicios') {
+      <p class="mb-3 text-sm">
+        Regístrate como proveedor en
+        <a class="text-enlace underline" href="https://www.inforesidencias.com/registro-proveedor" rel="noopener">el registro de proveedores</a>.
+      </p>
+    }
+
+    @if (motivo() === 'Residencia') {
+      <div class="space-y-3">
+        <div>
+          <label class="mb-1 block text-sm font-medium" for="contacto-nombre">Nombre *</label>
+          <input id="contacto-nombre" name="contacto.nombre" type="text" required class="w-full rounded border border-borde-input px-3 py-2" autocomplete="name" />
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium" for="contacto-email">Email *</label>
+          <input id="contacto-email" name="contacto.email" type="email" required class="w-full rounded border border-borde-input px-3 py-2" autocomplete="email" />
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium" for="contacto-telefono">Teléfono *</label>
+          <input id="contacto-telefono" name="contacto.telefono" type="tel" required inputmode="tel" class="w-full rounded border border-borde-input px-3 py-2" autocomplete="tel" />
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium" for="contacto-provincia">Provincia *</label>
+          <select id="contacto-provincia" name="contacto.provincia" required class="w-full rounded border border-borde-input px-3 py-2" [value]="''">
+            <option value="" disabled>Selecciona tu provincia</option>
+            @for (p of provincias; track p) {
+              <option [value]="p">{{ p }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium" for="contacto-mensaje">Mensaje *</label>
+          <textarea id="contacto-mensaje" name="contacto.mensaje" required rows="4" class="w-full rounded border border-borde-input px-3 py-2"></textarea>
+        </div>
+
+        <label class="flex items-start gap-2 text-xs text-texto-secundario">
+          <input type="checkbox" name="condicionesLegales" value="1" required class="mt-0.5" />
+          <span>{{ textoCondicionesLegales }}</span>
+        </label>
+        <label class="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="contacto.recibirMasInformacion" value="1" class="mt-0.5" />
+          <span>{{ textoNewsletter }}</span>
+        </label>
+        <label class="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="contacto.realizarContactoPensium" value="1" class="mt-0.5" />
+          <span>{{ textoPensium }}</span>
+        </label>
+
+        <ir-recaptcha (token)="onToken($event)" />
+
+        @if (estado() === 'error') {
+          <p class="text-sm text-error" role="alert">{{ mensaje() }}</p>
+        }
+
+        <button type="submit" [disabled]="estado() === 'enviando'" class="rounded bg-accion px-4 py-2 font-medium text-accion-texto hover:opacity-90 disabled:opacity-50">
+          {{ estado() === 'enviando' ? 'Enviando…' : 'Pedir información' }}
+        </button>
+      </div>
+    }
+  </form>
+}

@@ -1,0 +1,48 @@
+    <header class="border-b border-borde bg-fondo">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+        <a routerLink="/" aria-label="inforesidencias.com — inicio" class="min-w-0">
+          <!-- El PNG lleva fondo blanco propio: en oscuro se muestra como chip
+               redondeado deliberado (pendiente: pedir SVG/transparente a producción). -->
+          <img
+            src="/logo-inforesidencias.png"
+            alt="inforesidencias.com"
+            class="h-8 w-auto rounded-md sm:h-9"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </a>
+
+        <!-- El chat ya no ocupa sitio en la cabecera: dibuja su propio botón flotante.
+             Aquí queda la ayuda, con el NÚMERO a la vista (PM 2026-08-06). -->
+        <a
+          href="#te-ayudamos"
+          class="ml-auto inline-flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-accion px-2.5 text-sm font-semibold text-accion-texto lg:hidden"
+        >
+          <span aria-hidden="true">☎</span> 881 505 104
+        </a>
+
+        <nav aria-label="Principal" class="hidden items-center gap-1 text-sm lg:flex">
+          @for (item of nav; track item.href) {
+            <a [routerLink]="item.href" class="rounded px-3 py-2.5 font-medium hover:bg-superficie">
+              {{ item.etiqueta }}
+            </a>
+          }
+          @for (item of externos; track item.href; let i = $index) {
+            <a
+              [href]="item.href"
+              [class]="
+                i === 0
+                  ? 'ml-2 rounded border border-borde-input px-3 py-2 text-texto-secundario hover:bg-superficie'
+                  : 'rounded px-3 py-2.5 font-medium hover:bg-superficie'
+              "
+            >
+              {{ item.etiqueta }}
+            </a>
+          }
+        </nav>
+
+        <!-- Menú móvil: <details> nativo + los cierres que el nativo no trae -->
+        <ir-menu-movil [nav]="nav" [externos]="externos" />
+      </div>
+      <ir-cargador-chat />
+    </header>

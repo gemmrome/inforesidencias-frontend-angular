@@ -1,0 +1,86 @@
+<section aria-labelledby="h-ubicacion" class="mb-8">
+  <h2 id="h-ubicacion" class="mb-3 text-xl font-bold">Ubicación</h2>
+
+  @if (bbox()) {
+    @if (visible()) {
+      <iframe
+        [title]="'Mapa de la ubicación de ' + nombre()"
+        [src]="embedSrc()"
+        class="mb-2 aspect-[16/9] w-full rounded-lg border border-borde"
+        loading="lazy"
+      ></iframe>
+    } @else {
+      <button type="button" (click)="visible.set(true)" class="group relative mb-2 block aspect-[16/9] w-full overflow-hidden rounded-lg border border-borde">
+        <svg aria-hidden="true" viewBox="0 0 320 180" class="absolute inset-0 h-full w-full bg-superficie" preserveAspectRatio="xMidYMid slice">
+          <g class="fill-fondo">
+            <rect x="12" y="10" width="78" height="46" rx="3" />
+            <rect x="104" y="10" width="96" height="46" rx="3" />
+            <rect x="214" y="10" width="94" height="60" rx="3" />
+            <rect x="12" y="70" width="78" height="42" rx="3" />
+            <rect x="104" y="70" width="60" height="42" rx="3" />
+            <rect x="12" y="126" width="120" height="44" rx="3" />
+            <rect x="178" y="126" width="130" height="44" rx="3" />
+          </g>
+          <rect x="178" y="84" width="130" height="30" rx="6" class="fill-acento opacity-45" />
+          <path d="M0 118 C 60 108, 110 128, 168 116 L 168 126 C 110 138, 60 118, 0 128 Z" class="fill-azul-400 opacity-45" />
+          <g class="stroke-borde-input" stroke-width="2.5" fill="none">
+            <path d="M96 0 V180 M170 0 V180 M206 0 V180" />
+            <path d="M0 62 H320 M0 118 H320" />
+            <path d="M0 4 L320 30" stroke-width="3.5" />
+          </g>
+        </svg>
+        <span aria-hidden="true" class="absolute left-1/2 top-[38%] block h-9 w-7 -translate-x-1/2 -translate-y-full">
+          <svg viewBox="0 0 24 32" class="h-full w-full drop-shadow">
+            <path d="M12 31 C 4 18, 1 13, 1 9 A 11 11 0 1 1 23 9 C 23 13, 20 18, 12 31 Z" class="fill-accion" />
+            <circle cx="12" cy="9" r="4.5" class="fill-fondo" />
+          </svg>
+        </span>
+        <span class="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1.5 bg-gradient-to-t from-fondo via-fondo/90 to-transparent px-4 pb-4 pt-10 text-center">
+          <span class="rounded-md bg-accion px-5 py-2.5 font-semibold text-accion-texto group-hover:opacity-90">Ver el mapa de la zona</span>
+          <span class="max-w-md text-xs text-texto-secundario">
+            Vista orientativa. El mapa real lo sirve OpenStreetMap y solo se carga si lo pides, para no enviar tus datos a terceros sin necesidad.
+          </span>
+        </span>
+      </button>
+    }
+  }
+
+  @if (visible()) {
+    <p class="mb-2 text-xs text-texto-secundario">
+      Mapa ©
+      <a class="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener nofollow">colaboradores de OpenStreetMap</a>
+    </p>
+  }
+
+  <p class="mb-3 text-texto-secundario">{{ direccionCompleta() }}</p>
+
+  <div class="flex flex-wrap gap-3">
+    <span class="sr-only" id="h-comollegar">Cómo llegar</span>
+    <a
+      class="inline-block rounded-md border border-borde-input px-4 py-2.5 text-sm font-medium hover:bg-superficie"
+      [href]="'https://www.google.com/maps/dir/?api=1&destination=' + destino()"
+      target="_blank"
+      rel="noopener nofollow"
+    >
+      Cómo llegar (Google Maps)
+    </a>
+    <a
+      class="inline-block rounded-md border border-borde-input px-4 py-2.5 text-sm font-medium hover:bg-superficie"
+      [href]="'https://maps.apple.com/?daddr=' + destino()"
+      target="_blank"
+      rel="noopener nofollow"
+    >
+      Apple Maps
+    </a>
+    @if (geo()) {
+      <a
+        class="inline-block rounded-md border border-borde-input px-4 py-2.5 text-sm font-medium hover:bg-superficie"
+        [href]="'https://www.openstreetmap.org/directions?to=' + geo()!.lat + '%2C' + geo()!.lng"
+        target="_blank"
+        rel="noopener nofollow"
+      >
+        OpenStreetMap
+      </a>
+    }
+  </div>
+</section>

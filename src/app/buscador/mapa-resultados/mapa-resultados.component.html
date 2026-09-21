@@ -1,0 +1,34 @@
+    @if (total() > 0) {
+      <section aria-labelledby="h-mapa" class="mb-4">
+        <h2 id="h-mapa" class="sr-only">Mapa de resultados</h2>
+
+        @if (!abierto()) {
+          <button
+            type="button"
+            (click)="abrir()"
+            class="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-borde-input bg-superficie px-4 py-3 font-semibold hover:bg-fondo"
+          >
+            <span aria-hidden="true">🗺️</span>
+            {{ textoBotonMapa(total(), topeAlcanzado()) }}
+          </button>
+        } @else {
+          <div #contenedor class="h-[60vh] w-full overflow-hidden rounded-lg border border-borde"></div>
+          @if (error()) {
+            <p class="mt-2 text-sm text-error" role="alert">No se ha podido cargar el mapa. El listado de abajo sigue completo.</p>
+          }
+          <p class="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-texto-secundario">
+            <span>
+              {{ numES(pedidos().length || total()) }} centros en el mapa
+              @if (pedidos().length > 0) {
+                · {{ numES(conPrecio()) }} con precio publicado
+              }
+              @if (sinCoordenadas() > 0) {
+                · {{ numES(sinCoordenadas()) }} sin ubicación o fuera del mapa
+              }
+              — resultados del filtro, no solo esta página
+            </span>
+            <button type="button" (click)="cerrar()" class="underline">Ocultar mapa</button>
+          </p>
+        }
+      </section>
+    }

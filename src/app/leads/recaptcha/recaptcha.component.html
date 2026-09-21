@@ -1,0 +1,8 @@
+<div>
+  <div #contenedor aria-label="Verificación reCAPTCHA"></div>
+  @if (estado() === 'error') {
+    <p class="text-xs text-texto-secundario">
+      No se pudo cargar la verificación anti-robots (normal en preproducción: el dominio no está autorizado para la clave).
+    </p>
+  }
+</div>

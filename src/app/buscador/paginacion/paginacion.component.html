@@ -1,0 +1,41 @@
+    @if (totalPaginas() > 1) {
+      <nav aria-label="Paginación" class="mt-8">
+        <p class="mb-2 text-sm text-texto-secundario">Mostrando {{ numES(desde()) }}-{{ numES(hasta()) }} de {{ numES(total()) }}</p>
+        <ul class="flex flex-wrap items-center gap-1.5">
+          <li>
+            @if (pagina() > 1) {
+              <a [href]="href()(pagina() - 1)" rel="prev" [class]="cajaCss + ' border border-borde-input font-medium hover:bg-superficie'">
+                ← Anterior
+              </a>
+            } @else {
+              <span [class]="cajaCss + ' text-texto-secundario opacity-50'">← Anterior</span>
+            }
+          </li>
+
+          @for (n of paginas(); track n; let i = $index) {
+            <li class="flex items-center gap-1.5">
+              @if (hueco()(i)) {
+                <span aria-hidden="true" class="px-1 text-texto-secundario">…</span>
+              }
+              @if (n === pagina()) {
+                <span aria-current="page" [class]="cajaCss + ' bg-accion font-semibold text-accion-texto'">{{ n }}</span>
+              } @else {
+                <a [href]="href()(n)" [attr.aria-label]="'Página ' + n" [class]="cajaCss + ' border border-borde hover:bg-superficie'">
+                  {{ n }}
+                </a>
+              }
+            </li>
+          }
+
+          <li>
+            @if (pagina() < totalPaginas()) {
+              <a [href]="href()(pagina() + 1)" rel="next" [class]="cajaCss + ' border border-borde-input font-medium hover:bg-superficie'">
+                Siguiente →
+              </a>
+            } @else {
+              <span [class]="cajaCss + ' text-texto-secundario opacity-50'">Siguiente →</span>
+            }
+          </li>
+        </ul>
+      </nav>
+    }

@@ -1,0 +1,49 @@
+    <!-- El presupuesto va PRIMERO (patrón Booking): es el filtro que más usa quien
+         busca residencia. Solo se dibuja si la zona tiene precios. -->
+    @if (datos().histograma) {
+      <ir-filtro-presupuesto
+        [base]="base()"
+        [filtros]="filtros()"
+        [orden]="orden()"
+        [histograma]="datos().histograma!"
+        [totalConPrecio]="datos().totalConPrecio"
+        [idPrefijo]="idPrefijo()"
+      />
+    }
+
+    <section [attr.aria-labelledby]="idPrefijo() + 'h-filtros'" class="mb-6">
+      <h2 [id]="idPrefijo() + 'h-filtros'" class="mb-2 text-sm font-semibold uppercase tracking-wide text-texto-secundario">
+        Filtrar
+      </h2>
+
+      @if (hayFiltros(filtros())) {
+        <p class="mb-3">
+          <a [href]="base()" class="inline-block py-1.5 text-sm text-enlace underline">Quitar todos los filtros</a>
+        </p>
+      }
+
+      <ul class="mb-4 space-y-0.5 text-sm">
+        @for (f of facetas; track f.clave) {
+          @let activa = filtros().facetas.includes(f.clave);
+          @let n = datos().cuenta[f.clave] ?? 0;
+          <!-- Sin centros y sin activar: no se ofrece (no lleva a ningún sitio útil) -->
+          @if (n > 0 || activa) {
+            <li>
+              <a
+                [href]="alternarFaceta(base(), filtros(), f.clave)"
+                [attr.aria-current]="activa ? 'true' : null"
+                [class]="'flex items-center gap-2 rounded px-2 py-2 hover:bg-superficie ' + (activa ? 'font-semibold' : '')"
+              >
+                <span
+                  aria-hidden="true"
+                  [class]="'grid h-4 w-4 shrink-0 place-items-center rounded border ' + (activa ? 'border-accion bg-accion text-accion-texto' : 'border-borde-input')"
+                >
+                  {{ activa ? '✓' : '' }}
+                </span>
+                <span>{{ f.etiqueta }} <span class="text-texto-secundario">({{ numES(n) }})</span></span>
+              </a>
+            </li>
+          }
+        }
+      </ul>
+    </section>

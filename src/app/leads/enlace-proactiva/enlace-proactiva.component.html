@@ -1,0 +1,7 @@
+    <a
+      [routerLink]="['/particulares/buscamos-por-ti']"
+      [queryParams]="parametros()"
+      [class]="claseCss() ?? claseDefecto"
+    >
+      <ng-content>{{ etiqueta() }}</ng-content>
+    </a>

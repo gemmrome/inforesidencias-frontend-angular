@@ -1,0 +1,82 @@
+<header class="mb-6">
+  <p class="text-sm uppercase tracking-wide text-texto-secundario">{{ tipologia() }}</p>
+  <h1 class="text-3xl font-bold">{{ nombre() }}</h1>
+  @if (puntos().length > 0) {
+    <a href="#h-donde" class="mt-2 block text-texto-secundario hover:underline">{{ direccionTexto() }}</a>
+  } @else {
+    <p class="mt-2 text-texto-secundario">{{ direccionTexto() }}</p>
+  }
+</header>
+
+<section aria-labelledby="h-sin-datos" class="mb-8 rounded-md border border-borde bg-superficie-alt p-4">
+  <h2 id="h-sin-datos" class="text-lg font-semibold">Todavía no tenemos información de este centro</h2>
+  <p class="mt-2 text-texto-secundario">
+    Este centro aún no ha facilitado a Inforesidencias sus datos de servicios, precios ni instalaciones, así que no podemos mostrarte
+    una ficha completa ni calcular su índice de transparencia. Lo único que podemos confirmarte es dónde está.
+  </p>
+</section>
+
+@if (puntos().length > 0) {
+  <section aria-labelledby="h-donde" class="mb-8">
+    <h2 id="h-donde" class="mb-1 text-xl font-bold">{{ geo() ? 'Dónde está' : 'Centros de la zona en el mapa' }}</h2>
+    <p class="mb-3 text-sm text-texto-secundario">
+      @if (geo() && puntosSugeridos().length > 0) {
+        Este centro y otros de la zona, con su precio de partida.
+      } @else if (geo()) {
+        Ubicación de este centro.
+      } @else {
+        No tenemos la ubicación exacta de este centro. En el mapa, otros de la zona con su precio de partida.
+      }
+    </p>
+    <ir-mapa-resultados [puntos]="puntos()" [total]="puntos().length" [sinCoordenadas]="0" />
+    <p class="mt-3 text-sm text-texto-secundario">{{ direccionTexto() }}</p>
+  </section>
+}
+
+@if (sugerencias(); as s) {
+  <section aria-labelledby="h-sugerencias" class="mb-8">
+    <h2 id="h-sugerencias" class="text-xl font-bold">Centros {{ etiquetaNivel() }} que sí publican sus datos</h2>
+    <p class="mt-1 mb-4 text-sm text-texto-secundario">
+      Ordenados por índice de transparencia: cuánta información verificable publica cada uno sobre precios, contrato e inspecciones.
+    </p>
+    <ul class="grid gap-3 sm:grid-cols-2">
+      @for (c of s.centros; track c.centroId) {
+        <li class="rounded-md border border-borde p-3">
+          <a [href]="rutaSugerencia(c.url)" class="font-medium text-enlace hover:underline">{{ c.nombre }}</a>
+          <p class="mt-1 text-sm text-texto-secundario">{{ c.poblacion }}</p>
+          <dl class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            @if (c.transparencia != null) {
+              <div class="flex gap-1">
+                <dt class="text-texto-secundario">Transparencia:</dt>
+                <dd class="font-medium">{{ c.transparencia }}%</dd>
+              </div>
+            }
+            @if (c.plazas != null) {
+              <div class="flex gap-1">
+                <dt class="text-texto-secundario">Plazas:</dt>
+                <dd class="font-medium">{{ numES(c.plazas) }}</dd>
+              </div>
+            }
+            @if (c.precioDesde != null) {
+              <div class="flex gap-1">
+                <dt class="text-texto-secundario">Desde:</dt>
+                <dd class="font-medium">{{ numES(c.precioDesde) }} €/mes</dd>
+              </div>
+            }
+          </dl>
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+<section aria-labelledby="h-reclamar" class="rounded-md border border-borde p-4 text-sm">
+  <h2 id="h-reclamar" class="font-semibold">¿Eres el responsable de {{ nombre() }}?</h2>
+  <p class="mt-1 text-texto-secundario">
+    Puedes registrar el centro para publicar sus servicios, precios e instalaciones, y que quien busque residencia en
+    {{ poblacion() }} encuentre tu información y no solo tu dirección.
+  </p>
+  <a [href]="urlAlta()" class="mt-3 inline-block min-h-11 rounded-md bg-accion px-4 py-2.5 font-semibold text-accion-texto hover:opacity-90">
+    Registrar este centro
+  </a>
+</section>

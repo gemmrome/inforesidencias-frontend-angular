@@ -1,0 +1,49 @@
+    <details #detalle class="relative lg:hidden">
+      <!-- Sin aria-label: el nombre accesible sale del texto visible "Menú" (el ☰ es
+           decorativo). Del estado abierto/cerrado ya informa el propio <summary>. -->
+      <summary
+        class="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-md border border-borde-input px-3 text-sm font-medium"
+      >
+        <span aria-hidden="true">☰</span>
+        <span class="ml-1">Menú</span>
+      </summary>
+      <nav
+        aria-label="Principal (móvil)"
+        class="absolute right-0 z-20 mt-2 w-60 rounded-md border border-borde bg-fondo p-2 shadow-lg"
+      >
+        <ul>
+          <!-- El número VISIBLE dentro del menú (PM): el botón de la cabecera dice
+               "Llamar" por espacio, pero mucha gente mayor prefiere ver el número
+               —para apuntarlo o marcarlo desde otro teléfono— antes que pulsarlo. -->
+          <li class="mb-1 border-b border-borde pb-2">
+            <a href="tel:+34881505104" (click)="cerrar()" class="block rounded px-3 py-2 hover:bg-superficie">
+              <span class="block text-xs text-texto-secundario">Te atiende una trabajadora social</span>
+              <span class="text-lg font-bold">881 505 104</span>
+            </a>
+          </li>
+          @for (item of nav(); track item.href) {
+            <li>
+              <a
+                [routerLink]="item.href"
+                (click)="cerrar()"
+                class="block rounded px-3 py-3 font-medium hover:bg-superficie"
+              >
+                {{ item.etiqueta }}
+              </a>
+            </li>
+          }
+          <li class="my-1 border-t border-borde"></li>
+          @for (item of externos(); track item.href) {
+            <li>
+              <a
+                [href]="item.href"
+                (click)="cerrar()"
+                class="block rounded px-3 py-3 text-texto-secundario hover:bg-superficie"
+              >
+                {{ item.etiqueta }}
+              </a>
+            </li>
+          }
+        </ul>
+      </nav>
+    </details>

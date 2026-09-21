@@ -1,0 +1,78 @@
+    <div #contenedor class="relative">
+      <label for="busqueda-libre" class="sr-only">Buscar por población, provincia, código postal o nombre del centro</label>
+      <input
+        id="busqueda-libre"
+        type="search"
+        role="combobox"
+        [attr.aria-expanded]="abierto()"
+        aria-controls="busqueda-libre-resultados"
+        aria-autocomplete="list"
+        [attr.aria-activedescendant]="activo() >= 0 ? opciones()[activo()]?.clave : null"
+        [name]="name()"
+        [placeholder]="placeholder()"
+        class="w-full rounded-md border border-borde-input bg-fondo px-4 py-2.5 text-texto"
+        [value]="consulta()"
+        (input)="onInput($event)"
+        (keydown)="teclado($event)"
+        (focus)="onFocus()"
+      />
+      @if (cargando()) {
+        <span class="absolute right-3 top-3 text-sm text-texto-secundario" aria-live="polite">buscando…</span>
+      }
+      @if (abierto()) {
+        <div
+          id="busqueda-libre-resultados"
+          role="listbox"
+          class="absolute z-10 mt-1 max-h-96 w-full overflow-auto rounded-md border border-borde bg-fondo text-left shadow-lg"
+        >
+          @if (interp()?.url) {
+            <a
+              id="interp"
+              role="option"
+              [attr.aria-selected]="activo() === 0"
+              [href]="interp()!.url!"
+              [class]="'block border-b border-borde px-4 py-3 ' + (activo() === 0 ? 'bg-superficie' : 'hover:bg-superficie')"
+            >
+              <span class="block text-xs font-bold uppercase tracking-wide text-texto-secundario">Búsqueda interpretada</span>
+              <span class="font-medium">Ver resultados {{ resumirInterpretacion(interp()!.interpretacion) }}</span>
+            </a>
+          }
+
+          @if (opciones().length === 0) {
+            <p class="px-4 py-3 text-sm text-texto-secundario">Sin resultados para «{{ consulta() }}»</p>
+          }
+
+          @if (zonas().length > 0) {
+            <p class="border-b border-borde px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-texto-secundario">Zonas</p>
+            @for (z of zonas(); track z.ruta; let k = $index) {
+              <a
+                [id]="'z-' + z.ruta"
+                role="option"
+                [attr.aria-selected]="activo() === desplazamiento() + k"
+                [href]="z.ruta"
+                [class]="itemCss(desplazamiento() + k)"
+              >
+                <span class="font-medium">{{ z.nombre }}</span>
+                <span class="text-sm text-texto-secundario"> · {{ etiquetaZona[z.tipo] }} de {{ z.contexto }} · {{ z.centros }} centros</span>
+              </a>
+            }
+          }
+
+          @if (resultados().length > 0) {
+            <p class="border-y border-borde px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-texto-secundario">Centros</p>
+            @for (r of resultados(); track r.centroId; let j = $index) {
+              <a
+                [id]="'c-' + r.tipologia + '-' + r.centroId"
+                role="option"
+                [attr.aria-selected]="activo() === desplazamiento() + zonas().length + j"
+                [href]="r.ruta"
+                [class]="itemCss(desplazamiento() + zonas().length + j)"
+              >
+                <span class="font-medium">{{ r.nombre }}</span>
+                <span class="block text-sm text-texto-secundario">{{ r.tipologia }} · {{ r.poblacion }} ({{ r.provincia }})</span>
+              </a>
+            }
+          }
+        </div>
+      }
+    </div>

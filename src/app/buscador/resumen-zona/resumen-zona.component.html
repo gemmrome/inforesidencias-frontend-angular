@@ -1,0 +1,39 @@
+    @if (estadisticas().centros > 0) {
+      <section aria-label="Datos de la zona" class="mb-8 rounded bg-superficie p-4">
+        <p class="text-texto">
+          En {{ zonaEnFrase() }} hay <strong>{{ numES(estadisticas().centros) }} {{ tipo() }}</strong>
+          @if (estadisticas().plazasTotales !== null) {
+            con un total de <strong>{{ numES(estadisticas().plazasTotales!) }} plazas</strong>
+            @if (estadisticas().centrosConPlazas < estadisticas().centros) {
+              (entre los centros que publican su capacidad)
+            }
+          }
+          .
+          @if (estadisticas().precioDesdeMedio !== null) {
+            El precio de partida medio es de <strong>{{ euros(estadisticas().precioDesdeMedio!) }}</strong>
+            @if (
+              estadisticas().precioDesdeMin !== null &&
+              estadisticas().precioDesdeMax !== null &&
+              estadisticas().precioDesdeMax! > estadisticas().precioDesdeMin!
+            ) {
+              (desde {{ euros(estadisticas().precioDesdeMin!) }} hasta {{ euros(estadisticas().precioDesdeMax!) }})
+            }
+            .
+          }
+          @if (estadisticas().ratioMedio !== null) {
+            La ratio media de personal es de
+            <strong>{{ ratioLegible() }} profesionales por cada 10 usuarios</strong>.
+          }
+          @if (estadisticas().transparenciaMedia !== null) {
+            Índice de transparencia medio: <strong>{{ estadisticas().transparenciaMedia }}%</strong>.
+          }
+        </p>
+        <p class="mt-2 text-xs text-texto-secundario">
+          Datos calculados por inforesidencias.com sobre {{ numES(estadisticas().centros) }} centros
+          @if (estadisticas().precioDesdeMedio !== null) {
+            (precio: {{ numES(estadisticas().centrosConPrecio) }} que lo publican)
+          }
+          a {{ fechaLegible() }}.
+        </p>
+      </section>
+    }

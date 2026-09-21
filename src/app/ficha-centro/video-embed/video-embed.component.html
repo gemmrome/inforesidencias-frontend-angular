@@ -1,0 +1,21 @@
+@if (id()) {
+  @if (activo()) {
+    <iframe
+      class="aspect-video w-full rounded"
+      [src]="embed()"
+      [title]="titulo()"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  } @else {
+    <button
+      type="button"
+      (click)="activo.set(true)"
+      class="group relative block aspect-video w-full overflow-hidden rounded bg-black"
+      [attr.aria-label]="'Reproducir vídeo: ' + titulo()"
+    >
+      <img [src]="miniatura()" [alt]="titulo()" class="h-full w-full object-cover opacity-80 transition group-hover:opacity-100" loading="lazy" />
+      <span class="absolute inset-0 m-auto h-14 w-14 rounded-full bg-fondo/90 text-2xl leading-[3.5rem] text-texto shadow">▶</span>
+    </button>
+  }
+}

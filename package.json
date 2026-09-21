@@ -1,0 +1,54 @@
+{
+  "name": "inforesidencias-frontend-angular",
+  "version": "0.4.3",
+  "private": true,
+  "engines": {
+    "node": ">=22.20.0 <25"
+  },
+  "scripts": {
+    "ng": "ng",
+    "dev": "node --import tsx watch src/server.ts",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:ssr": "ng build && node dist/inforesidencias-frontend-angular/server/server.mjs --build-only",
+    "serve:ssr": "node dist/inforesidencias-frontend-angular/server/server.mjs",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "lint": "ng lint",
+    "sync:full": "node scripts/sync-indice.mjs full",
+    "sync:incremental": "node scripts/sync-indice.mjs incremental",
+    "sync:check": "node scripts/sync-indice.mjs check",
+    "sync:enriquecer": "node scripts/sync-indice.mjs enriquecer"
+  },
+  "dependencies": {
+    "@angular/animations": "^22.0.0",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-server": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "@angular/ssr": "^22.0.0",
+    "express": "^4.21.0",
+    "leaflet": "^1.9.4",
+    "minisearch": "^7.2.0",
+    "rxjs": "~7.8.0",
+    "sanitize-html": "^2.17.5",
+    "tslib": "^2.6.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/express": "^4.17.21",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^22.10.0",
+    "@types/sanitize-html": "^2.16.1",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "~6.0.0"
+  }
+}

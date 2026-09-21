@@ -1,0 +1,35 @@
+@if (pestanas().length > 0) {
+  <section class="mb-8">
+    <fieldset [class]="mostrarPestanas() ? 'galeria-pestanas border-0 p-0' : 'border-0 p-0'">
+      @if (mostrarPestanas()) {
+        <legend class="sr-only">Qué quieres ver de este centro</legend>
+
+        @for (p of pestanas(); track p.clave; let i = $index) {
+          <input type="radio" [name]="grupo()" [id]="idRadio(p.clave)" [attr.data-pestana]="p.clave" [checked]="i === 0" class="sr-only" />
+        }
+
+        <div class="galeria-barra flex flex-wrap gap-2 border-b border-borde">
+          @for (p of pestanas(); track p.clave) {
+            <label
+              [for]="idRadio(p.clave)"
+              [attr.data-pestana]="p.clave"
+              class="-mb-px cursor-pointer rounded-t-md border border-transparent px-4 py-2 text-texto-secundario hover:bg-superficie"
+            >
+              {{ p.etiqueta }}
+            </label>
+          }
+        </div>
+      }
+
+      @if (tienePestana('centro')) {
+        <div data-panel="centro" class="pt-4"><ng-content select="[panelCentro]" /></div>
+      }
+      @if (tienePestana('comida')) {
+        <div data-panel="comida" class="pt-4"><ng-content select="[panelComida]" /></div>
+      }
+      @if (tienePestana('videos')) {
+        <div data-panel="videos" class="pt-4"><ng-content select="[panelVideos]" /></div>
+      }
+    </fieldset>
+  </section>
+}

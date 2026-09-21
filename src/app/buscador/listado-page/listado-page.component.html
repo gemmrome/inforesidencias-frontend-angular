@@ -1,0 +1,199 @@
+    @if (respuesta(); as r) {
+      @if (r.encontrado) {
+        <main class="mx-auto max-w-5xl px-4 py-8">
+          <nav aria-label="Miga de pan" class="mb-4 text-sm text-texto-secundario">
+            <a class="hover:underline" [routerLink]="'/centros/buscador/' + r.ctx.rutaTipologia">{{ r.ctx.tipoCorto }}</a>
+            @if (r.ctx.nivel !== 'nacional') {
+              · {{ r.ctx.zonaCorto }}
+            }
+          </nav>
+
+          <div class="gap-8 lg:flex">
+            <section class="grow lg:order-2" aria-label="Resultados">
+              <ir-busqueda-libre [tipologia]="r.ctx.tipoCod !== null ? r.ctx.rutaTipologia : undefined" />
+              <h1 class="mb-2 text-2xl font-bold">
+                <span class="mr-2">{{ r.centrosTotal }}</span>{{ r.ctx.tipoCorto }} en {{ r.ctx.zonaEnFrase }}
+              </h1>
+
+              @if (hayFiltros(r.filtros)) {
+                <div class="mb-4 flex flex-wrap items-center gap-2">
+                  <span class="text-sm text-texto-secundario">Filtros:</span>
+                  @for (clave of r.filtros.facetas; track clave) {
+                    <a [href]="alternarFaceta(r.base, r.filtros, clave)" class="inline-flex items-center gap-1 rounded-full border border-borde-input px-3 py-1.5 text-sm hover:bg-superficie">
+                      {{ etiquetaFaceta(clave) }}
+                      <span aria-hidden="true">×</span>
+                      <span class="sr-only">(quitar filtro)</span>
+                    </a>
+                  }
+                  @if (r.filtros.precioMin !== undefined || r.filtros.precioMax !== undefined) {
+                    <a [href]="quitarPrecio(r.base, r.filtros)" class="inline-flex items-center gap-1 rounded-full border border-borde-input px-3 py-1.5 text-sm hover:bg-superficie">
+                      {{ r.filtros.precioMin !== undefined ? numES(r.filtros.precioMin) + ' €' : '0 €' }}
+                      – {{ r.filtros.precioMax !== undefined ? numES(r.filtros.precioMax) + ' €' : 'sin tope' }}/mes
+                      <span aria-hidden="true">×</span>
+                      <span class="sr-only">(quitar filtro)</span>
+                    </a>
+                  }
+                  <a [href]="r.base" class="py-1.5 text-sm text-enlace underline">Quitar todos</a>
+                </div>
+              }
+
+              <!-- MÓVIL: filtros plegados en un <details> nativo (cero JS, accesible). -->
+              <details class="mb-4 rounded-lg border border-borde lg:hidden">
+                <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between px-4 py-3 font-medium">
+                  <span>
+                    Filtrar
+                    @if (hayFiltros(r.filtros)) {
+                      <span class="ml-2 rounded-full bg-accion px-2 py-0.5 text-xs text-accion-texto">{{ contadorFiltros(r) }}</span>
+                    }
+                  </span>
+                  <span aria-hidden="true" class="text-texto-secundario">▾</span>
+                </summary>
+                <div class="border-t border-borde p-4">
+                  <ir-panel-filtros [base]="r.base" [filtros]="r.filtros" [datos]="r.panel" [orden]="r.orden" idPrefijo="m-" />
+                  <a [href]="r.base + aQuery(r.filtros)" class="inline-block w-full rounded-md bg-accion px-4 py-3 text-center font-semibold text-accion-texto">
+                    Ver {{ numES(r.centrosTotal) }} resultados
+                  </a>
+                </div>
+              </details>
+
+              @if (r.candidatosTotal > 1) {
+                <div class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                  <span class="text-texto-secundario">Ordenar por:</span>
+                  @if (r.orden === 'transparencia') {
+                    <span class="font-semibold" aria-current="true">Transparencia</span>
+                  } @else {
+                    <a class="text-enlace underline" [href]="ordenHref(r, 'transparencia')">Transparencia</a>
+                  }
+                  @if (r.puedeOrdenarPorFecha) {
+                    @if (r.orden === 'actualizacion') {
+                      <span class="font-semibold" aria-current="true">Fecha de actualización</span>
+                    } @else {
+                      <a class="text-enlace underline" [href]="ordenHref(r, 'actualizacion')">Fecha de actualización</a>
+                    }
+                  }
+                </div>
+              }
+
+              @if (r.visibles.length === 0) {
+                <p class="mb-6 text-texto-secundario">
+                  @if (hayFiltros(r.filtros)) {
+                    Ningún centro de {{ r.ctx.zonaEnFrase }} cumple todos los filtros.
+                    <a class="text-enlace underline" [href]="r.base">Quítalos para ver los {{ r.candidatosTotal }} centros de la zona</a>.
+                  } @else {
+                    No hay {{ r.ctx.tipoCorto.toLowerCase() }} publicados en {{ r.ctx.zonaEnFrase }} ahora mismo. Consulta las zonas
+                    cercanas desde la navegación.
+                  }
+                </p>
+              }
+
+              <ir-mapa-resultados [url]="r.resumenMapa.url" [total]="r.resumenMapa.total" [topeAlcanzado]="r.resumenMapa.topeAlcanzado" [sinCoordenadas]="r.resumenMapa.sinCoordenadas" />
+
+              @for (d of r.visibles; track d.id; let i = $index) {
+                <ir-tarjeta-centro [doc]="d" [prioridad]="i === 0" />
+              }
+
+              <ir-paginacion [pagina]="r.pagina" [totalPaginas]="r.totalPaginas" [total]="r.centrosTotal" [porPagina]="r.porPagina" [href]="hrefPagina(r)" />
+
+              @if (r.pagina === 1) {
+                <ir-resumen-zona [estadisticas]="r.estadisticas" [tipoCorto]="r.ctx.tipoCorto" [zonaEnFrase]="r.ctx.zonaEnFrase" />
+              }
+
+              @if (r.faqs.length > 0) {
+                <section aria-label="Preguntas frecuentes" class="mt-10">
+                  <h2 class="mb-3 text-xl font-semibold">Preguntas frecuentes sobre {{ r.ctx.tipoCorto.toLowerCase() }} en {{ r.ctx.zonaEnFrase }}</h2>
+                  @for (f of r.faqs; track f.pregunta) {
+                    <details class="mb-2 rounded border border-borde p-3">
+                      <summary class="cursor-pointer font-medium">{{ f.pregunta }}</summary>
+                      <p class="mt-2 text-texto">{{ f.respuesta }}</p>
+                    </details>
+                  }
+                </section>
+              }
+
+              <div class="mt-10">
+                <ir-bloque-asesoramiento [tipologia]="r.ctx.tipoCod !== null ? String(r.ctx.tipoCod) : '1'" [provincia]="r.ctx.provincia ?? ''" />
+              </div>
+            </section>
+
+            <aside class="hidden lg:order-1 lg:block lg:w-64 lg:shrink-0" aria-label="Filtros y ayuda">
+              <nav aria-label="Tipo de centro" class="mb-6">
+                <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-texto-secundario">Tipo de centro</h2>
+                <ul class="text-sm">
+                  @for (t of r.tipologiasEnZona; track t.ruta) {
+                    <li class="py-0.5">
+                      @if (t.ruta === r.ctx.rutaTipologia) {
+                        <span class="font-semibold">{{ t.corto }}</span>
+                      } @else {
+                        <a class="text-enlace hover:underline" [href]="t.href">{{ t.corto }}</a>
+                      }
+                      <span class="text-texto-secundario">({{ t.centros }})</span>
+                    </li>
+                  }
+                  <li class="py-0.5">
+                    @if (r.ctx.rutaTipologia === 'directorio') {
+                      <span class="font-semibold">Todos los centros</span>
+                    } @else {
+                      <a class="text-enlace hover:underline" [href]="'/centros/buscador/directorio' + rutaSinTipologia(r)">Todos los centros</a>
+                    }
+                  </li>
+                </ul>
+              </nav>
+
+              <ir-panel-filtros [base]="r.base" [filtros]="r.filtros" [datos]="r.panel" [orden]="r.orden" idPrefijo="d-" />
+
+              @if (r.ctx.nivel === 'provincia' && (r.ctx.rutaTipologia === 'residencias' || r.ctx.rutaTipologia === 'directorio')) {
+                <div class="mb-6 space-y-1 text-sm">
+                  <p>
+                    <a class="font-medium text-enlace underline" [routerLink]="'/precios-residencias/' + provinciaSlug(r)">
+                      Precios de residencias en {{ r.ctx.provincia }} →
+                    </a>
+                  </p>
+                  <p>
+                    <a class="font-medium text-enlace underline" [routerLink]="'/residencias-mas-transparentes/' + provinciaSlug(r)">
+                      Las más transparentes de {{ r.ctx.provincia }} →
+                    </a>
+                  </p>
+                  @for (l of r.listadosProvincia; track l.slug) {
+                    <p><a class="text-enlace underline" [routerLink]="'/' + l.slug + '/' + l.provinciaSlug">{{ l.corto }} →</a></p>
+                  }
+                </div>
+              }
+
+              <div class="mb-6 rounded border border-borde bg-superficie p-4 text-sm">
+                <h2 class="mb-2 font-semibold">¿Dudas al elegir? Te ayudamos gratis</h2>
+                <p class="flex flex-wrap items-center gap-3">
+                  <a href="tel:+34881505104" class="inline-block rounded-md bg-accion px-4 py-2 font-semibold text-accion-texto hover:opacity-90">881 505 104</a>
+                  <ir-enlace-proactiva
+                    [tipologia]="r.ctx.tipoCod !== null ? String(r.ctx.tipoCod) : '1'"
+                    [provincia]="r.ctx.provincia ?? undefined"
+                    etiqueta="Buscamos por ti →"
+                    class="inline-block py-2 font-medium text-enlace underline"
+                  />
+                </p>
+              </div>
+
+              @if (r.subzonas.length > 0) {
+                <nav [attr.aria-label]="r.etiquetaSub" class="mt-6">
+                  <h2 class="mb-2 text-sm font-semibold uppercase tracking-wide text-texto-secundario">{{ r.etiquetaSub }}</h2>
+                  <ul class="text-sm">
+                    @for (s of r.subzonas; track s.slug) {
+                      <li class="py-0.5">
+                        <a class="text-enlace hover:underline" [href]="s.href">{{ s.nombre }}</a>
+                        <span class="text-texto-secundario">({{ s.centros }})</span>
+                      </li>
+                    }
+                  </ul>
+                </nav>
+              }
+            </aside>
+          </div>
+
+          <footer class="mt-12 border-t pt-4 text-xs text-texto-secundario">Índice sincronizado: {{ fechaSyncLegible(r.fechaSync) }}</footer>
+        </main>
+      } @else if (!r.redirect) {
+        <main class="mx-auto max-w-5xl px-4 py-16 text-center">
+          <h1 class="mb-2 text-2xl font-bold">Zona no encontrada</h1>
+          <p class="text-texto-secundario">No conocemos esa zona geográfica. Prueba desde el buscador de la portada.</p>
+        </main>
+      }
+    }

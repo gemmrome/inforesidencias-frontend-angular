@@ -1,0 +1,11 @@
+    @if (preproduccion) {
+      <section
+        [attr.aria-label]="'Pendiente: ' + titulo()"
+        [style.min-height]="altura()"
+        class="mb-8 rounded-lg border-2 border-dashed border-amber-300 bg-amber-50/50 p-4"
+      >
+        <p class="text-sm font-semibold text-amber-800">⏳ {{ titulo() }}</p>
+        <p class="text-xs text-amber-700">Se integra con: {{ dependeDe() }}</p>
+        <ng-content />
+      </section>
+    }

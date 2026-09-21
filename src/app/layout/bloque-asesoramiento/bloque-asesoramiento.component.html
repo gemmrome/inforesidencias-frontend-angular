@@ -1,0 +1,20 @@
+    <section id="te-ayudamos" aria-labelledby="h-te-ayudamos" class="my-6 overflow-hidden rounded-lg border border-borde">
+      <div class="bg-superficie p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <div>
+          <h2 id="h-te-ayudamos" class="text-lg font-bold">¿Dudas al elegir? Te ayudamos gratis</h2>
+          <p class="text-sm text-texto-secundario">
+            Llámanos y te atiende una trabajadora social, de lunes a viernes. Cuéntanos qué necesitas y te enviamos los
+            centros que encajan.
+          </p>
+        </div>
+        <div class="mt-4 flex shrink-0 flex-wrap items-center gap-3 sm:mt-0">
+          <a
+            href="tel:+34881505104"
+            class="inline-flex min-h-11 items-center rounded-md bg-accion px-4 py-2.5 font-semibold text-accion-texto hover:opacity-90"
+          >
+            881 505 104
+          </a>
+          <ir-enlace-proactiva [provincia]="provincia()" [tipologia]="tipologia()" />
+        </div>
+      </div>
+    </section>

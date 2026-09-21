@@ -1,0 +1,74 @@
+    <section [attr.aria-labelledby]="idPrefijo() + 'h-presupuesto'" class="mb-6">
+      <h2 [id]="idPrefijo() + 'h-presupuesto'" class="mb-1 text-sm font-semibold uppercase tracking-wide text-texto-secundario">
+        Tu presupuesto (por mes)
+      </h2>
+
+      <form [action]="base()" method="get">
+        @if (filtros().facetas.length > 0) {
+          <input type="hidden" name="f" [value]="filtros().facetas.join(',')" />
+        }
+        @if (orden() !== 'transparencia') {
+          <input type="hidden" name="orden" [value]="orden()" />
+        }
+
+        <p class="mb-2 text-lg font-bold">
+          {{ numES(desde()) }} € – {{ numES(hasta()) }} €
+          <span class="ml-1 text-sm font-normal text-texto-secundario">/mes</span>
+        </p>
+
+        <div aria-hidden="true" class="mb-2 flex h-16 items-end gap-px">
+          @for (b of histograma().barras; track b.desde) {
+            <span
+              [title]="numES(b.desde) + '–' + numES(b.hasta) + ' €: ' + b.n + ' centros'"
+              [style.height.%]="Math.max(6, (b.n / maxBarra()) * 100)"
+              [class]="'flex-1 rounded-sm ' + (b.hasta >= desde() && b.desde <= hasta() ? 'bg-accion' : 'bg-borde')"
+            ></span>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <div>
+            <label [for]="idPrefijo() + 'precio-min'" class="block text-xs text-texto-secundario">Desde</label>
+            <input
+              [id]="idPrefijo() + 'precio-min'"
+              name="precioMin"
+              type="range"
+              [min]="histograma().min"
+              [max]="histograma().max"
+              step="50"
+              [value]="desde()"
+              (input)="onDesde($event)"
+              class="w-full accent-[var(--acento)]"
+            />
+          </div>
+          <div>
+            <label [for]="idPrefijo() + 'precio-max'" class="block text-xs text-texto-secundario">Hasta</label>
+            <input
+              [id]="idPrefijo() + 'precio-max'"
+              name="precioMax"
+              type="range"
+              [min]="histograma().min"
+              [max]="histograma().max"
+              step="50"
+              [value]="hasta()"
+              (input)="onHasta($event)"
+              class="w-full accent-[var(--acento)]"
+            />
+          </div>
+        </div>
+
+        <div class="mt-3 flex flex-wrap items-center gap-3">
+          <button type="submit" class="rounded-md bg-accion px-4 py-2.5 text-sm font-semibold text-accion-texto hover:opacity-90">
+            Aplicar
+          </button>
+          @if (activo()) {
+            <a [href]="base()" class="py-2 text-sm text-enlace underline">Quitar</a>
+          }
+        </div>
+      </form>
+
+      <p class="mt-2 text-xs text-texto-secundario">
+        Sobre los {{ numES(totalConPrecio()) }} centros de la zona que publican precio. Los que no lo publican quedan fuera de este
+        filtro.
+      </p>
+    </section>

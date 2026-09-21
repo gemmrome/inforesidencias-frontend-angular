@@ -1,0 +1,255 @@
+@if (datos(); as d) {
+  @if (!d.encontrado) {
+    <main class="mx-auto max-w-4xl px-4 py-8">
+      <p class="text-texto-secundario">No hemos podido cargar este centro. Vuelve a intentarlo en unos minutos.</p>
+    </main>
+  } @else if (!d.esMiembro) {
+    <main class="mx-auto max-w-4xl px-4 py-8">
+      <nav aria-label="Miga de pan" class="mb-4 text-sm text-texto-secundario">
+        <a class="hover:underline" [href]="d.migaFicha.comunidad.href">{{ d.migaFicha.comunidad.texto }}</a>
+        ·
+        <a class="hover:underline" [href]="d.migaFicha.provincia.href">{{ d.migaFicha.provincia.texto }}</a>
+        ·
+        <a class="hover:underline" [href]="d.migaFicha.poblacion.href">{{ d.migaFicha.poblacion.texto }}</a>
+      </nav>
+
+      <ir-ficha-sin-informacion
+        [nombre]="d.centro.nombre"
+        [tipologia]="d.centro.tipologia"
+        [direccion]="d.centro.direccion"
+        [codigoPostal]="d.centro.codigoPostal"
+        [poblacion]="d.centro.poblacion"
+        [provincia]="d.centro.provincia"
+        [sugerencias]="d.sugerencias"
+        [urlAlta]="d.urlAlta"
+        [geo]="d.centro.geo"
+      />
+
+      <ir-bloque-asesoramiento />
+    </main>
+  } @else {
+    <main class="mx-auto max-w-4xl px-4 py-8">
+      <nav aria-label="Miga de pan" class="mb-4 text-sm text-texto-secundario">
+        <a class="hover:underline" [href]="d.migaFicha.comunidad.href">{{ d.migaFicha.comunidad.texto }}</a>
+        ·
+        <a class="hover:underline" [href]="d.migaFicha.provincia.href">{{ d.migaFicha.provincia.texto }}</a>
+        ·
+        <a class="hover:underline" [href]="d.migaFicha.poblacion.href">{{ d.migaFicha.poblacion.texto }}</a>
+      </nav>
+
+      <header class="mb-6">
+        <div class="sm:flex sm:items-start sm:justify-between sm:gap-6">
+          <div>
+            <p class="text-sm uppercase tracking-wide text-texto-secundario">{{ d.centro.tipologia }}</p>
+            <h1 class="text-3xl font-bold">{{ d.centro.nombre }}</h1>
+            <a href="#h-ubicacion" class="mt-1 block text-texto-secundario hover:underline">{{ d.direccionCompleta }}</a>
+            @if (d.centro.eslogan) {
+              <p class="mt-1 italic text-texto-secundario">{{ d.centro.eslogan }}</p>
+            }
+          </div>
+          @if (d.logo; as logo) {
+            <div class="mt-4 w-fit rounded-md bg-white p-2 sm:mt-0 sm:shrink-0">
+              <img [src]="logo" [alt]="'Logotipo de ' + (d.centro.grupo ?? d.centro.nombre)" loading="lazy" class="max-h-18 w-auto max-w-[11rem] object-contain" />
+            </div>
+          }
+        </div>
+
+        <dl class="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm">
+          @if (d.centro.plazasTotales !== undefined) {
+            <div>
+              <dt class="inline text-texto-secundario">Plazas totales: </dt>
+              <dd class="inline font-semibold">{{ d.centro.plazasTotales }}</dd>
+            </div>
+          }
+          @if (d.centro.transparencia; as t) {
+            <div>
+              <dt class="inline text-texto-secundario">Índice de transparencia: </dt>
+              <dd class="inline font-semibold">{{ t.indice }}% · {{ t.tramo }}</dd>
+            </div>
+          }
+          @if (d.centro.grupo) {
+            <div>
+              <dt class="inline text-texto-secundario">Grupo: </dt>
+              <dd class="inline">{{ d.grupoEtiqueta }}</dd>
+            </div>
+          }
+        </dl>
+
+        <div class="mt-4 flex flex-wrap gap-3">
+          <a href="#contactar" class="rounded-md bg-accion px-5 py-2.5 font-medium text-accion-texto hover:opacity-90">Contactar con el centro</a>
+          <ir-acciones-contacto
+            [idCentro]="d.centro.id"
+            [nombreCentro]="d.centro.nombre"
+            [telefono]="d.centro.contacto.telefono"
+            [web]="d.centro.contacto.web"
+          />
+          <a href="#te-ayudamos" class="rounded-md border border-borde-input px-4 py-2.5 font-medium hover:bg-superficie">¿Dudas al elegir? Te ayudamos gratis</a>
+        </div>
+      </header>
+
+      <ir-galeria-pestanas [idCentro]="d.centro.id" [pestanas]="d.pestanas">
+        @if (d.imagenes.length > 0) {
+          <div panelCentro aria-label="Galería" class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            @for (img of d.imagenes; track img.url) {
+              <img
+                [src]="img.url"
+                [alt]="img.alt"
+                [loading]="img.prioritaria ? 'eager' : 'lazy'"
+                [attr.fetchpriority]="img.prioritaria ? 'high' : null"
+                class="aspect-[4/3] w-full rounded object-cover"
+              />
+            }
+          </div>
+        }
+        @if (d.comida; as comida) {
+          <div panelComida>
+            <ir-panel-comida [comida]="comida" [nombreCentro]="d.centro.nombre" />
+          </div>
+        }
+        @if (d.videos.length > 0) {
+          <div panelVideos class="grid gap-4 sm:grid-cols-2">
+            @for (v of d.videos; track v.url) {
+              <ir-video-embed [url]="v.url" [titulo]="v.titulo" />
+            }
+          </div>
+        }
+      </ir-galeria-pestanas>
+
+      <ir-mapa-centro [geo]="d.centro.geo" [nombre]="d.centro.nombre" [direccionCompleta]="d.direccionCompleta" />
+
+      @if (d.centro.precios; as precios) {
+        <section class="mb-8">
+          <h2 class="mb-2 text-xl font-semibold">Habitaciones y precios</h2>
+          @if (precios.mostrarEnFicha && precios.habitaciones.length > 0) {
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-borde text-left text-texto-secundario">
+                  <th class="py-1 font-normal">Tipo de habitación</th>
+                  <th class="py-1 font-normal">Plazas</th>
+                  <th class="py-1 text-right font-normal">Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (h of precios.habitaciones; track h.codigo) {
+                  <tr class="border-b border-borde">
+                    <td class="py-1">{{ h.etiqueta }}</td>
+                    <td class="py-1">
+                      @if (h.disponibilidad === 'disponible') {
+                        <span class="text-exito">Disponible</span>
+                      } @else if (h.disponibilidad === 'ultimas-plazas') {
+                        <span class="text-exito">Últimas plazas</span>
+                      } @else if (h.disponibilidad === 'sin-plazas') {
+                        <span class="text-texto-secundario">Sin plazas ahora</span>
+                      }
+                    </td>
+                    <td class="py-1 text-right font-medium">
+                      @if (h.precio !== undefined) {
+                        {{ numES(h.precio) }} €/mes
+                      } @else {
+                        <span class="font-normal text-texto-secundario">A consultar</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="text-sm text-texto-secundario">{{ precios.sistema ?? 'A consultar con el centro' }}</p>
+          }
+        </section>
+      }
+
+      @if (d.centro.descripcionHtml; as descripcion) {
+        <section class="prose prose-neutral mb-8 max-w-none">
+          <h2 class="text-xl font-semibold">Sobre el centro</h2>
+          <div [innerHTML]="descripcionSegura(descripcion)"></div>
+        </section>
+      }
+
+      @if (d.centro.porqueElegimos; as porque) {
+        <section class="mb-8">
+          <h2 class="mb-2 text-xl font-semibold">¿Por qué elegirnos?</h2>
+          <p class="whitespace-pre-line text-texto">{{ porque }}</p>
+        </section>
+      }
+
+      @for (grupo of d.centro.caracteristicas; track grupo.ambito) {
+        <section class="mb-8">
+          <h2 class="mb-2 text-xl font-semibold">{{ grupo.etiqueta }}</h2>
+          <dl class="grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2">
+            @for (c of grupo.caracteristicas; track c.nombre) {
+              <div class="flex justify-between border-b border-borde py-1 text-sm">
+                <dt class="text-texto-secundario">{{ c.etiqueta }}</dt>
+                <dd [class]="'text-right ' + valorCaracteristica(c).clase">{{ valorCaracteristica(c).texto }}</dd>
+              </div>
+            }
+          </dl>
+        </section>
+      }
+
+      @if (d.centro.documentacion.length > 0) {
+        <section class="mb-8">
+          <h2 class="mb-2 text-xl font-semibold">Documentación</h2>
+          <dl class="text-sm">
+            @for (doc of d.centro.documentacion; track doc.clave) {
+              <div class="border-b border-borde py-1.5">
+                <dt>
+                  @if (doc.url) {
+                    <a class="text-enlace underline" [href]="doc.url" target="_blank" rel="noopener">{{ doc.etiqueta }}</a>
+                    <span class="text-texto-secundario">(PDF)</span>
+                  } @else {
+                    {{ doc.etiqueta }}
+                  }
+                </dt>
+                @if (doc.descripcion) {
+                  <dd class="text-texto-secundario">{{ doc.descripcion }}</dd>
+                }
+              </div>
+            }
+          </dl>
+        </section>
+      }
+
+      <section class="mb-8">
+        <ir-formulario-contacto-centro [idCentro]="d.centro.id" [nombreCentro]="d.centro.nombre" [tipologia]="d.centro.tipologia" />
+      </section>
+
+      <ir-placeholder-block
+        titulo="Índice de transparencia — sección propia con explicación («¿Cómo calculamos…?»)"
+        dependeDe="centro.transparencia (ya disponible: índice, razón, tramo) + texto editorial de la explicación"
+        altura="8rem"
+      />
+
+      <ir-placeholder-block
+        titulo="Opiniones sobre el centro (nativas) + valoración de Google"
+        dependeDe="endpoint de opiniones del proveedor · Google: evaluación pendiente"
+        altura="10rem"
+      />
+
+      <section class="mb-8">
+        <ir-bloque-asesoramiento [tipologia]="tipologiaAsesoramiento()" [provincia]="d.centro.contacto.poblacion.provincia" />
+      </section>
+
+      <nav aria-label="Más sobre la zona" class="mb-8 rounded bg-superficie p-4 text-sm">
+        <h2 class="mb-2 text-base font-semibold">Más sobre residencias en {{ d.centro.contacto.poblacion.provincia }}</h2>
+        <ul class="space-y-1">
+          <li><a class="text-enlace underline" [href]="d.enlacesZona.otrasEnPoblacion.href">{{ d.enlacesZona.otrasEnPoblacion.texto }}</a></li>
+          @if (d.enlacesZona.preciosProvincia; as precios) {
+            <li><a class="text-enlace underline" [href]="precios.href">{{ precios.texto }}</a></li>
+          }
+          @if (d.enlacesZona.masTransparentesProvincia; as masT) {
+            <li><a class="text-enlace underline" [href]="masT.href">{{ masT.texto }}</a></li>
+          }
+        </ul>
+      </nav>
+
+      <ir-placeholder-block titulo="«Reportar información incorrecta»" dependeDe="canal a definir" altura="3rem" />
+
+      <footer class="mt-12 border-t pt-4 text-xs text-texto-secundario">
+        @if (d.fechaActualizacionLegible) {
+          Última actualización del centro: {{ d.fechaActualizacionLegible }}.
+        }
+      </footer>
+    </main>
+  }
+}

@@ -1,0 +1,23 @@
+# Inforesidencias.com
+
+> Directorio independiente de residencias de mayores, centros de día, servicios de atención
+> domiciliaria y teleasistencia en España (~9.200 centros). Publicamos plazas, precios
+> reales facilitados por los centros y un índice de transparencia propio con metodología
+> pública. Operado por Inforesidencias (gestion@inforesidencias.com). Contenido en español.
+
+## Contenido principal
+
+- [Buscador por zonas](https://www.inforesidencias.com/centros/buscador/residencias): páginas por
+  comunidad, provincia y comarca con listados completos, cifras agregadas (nº de centros,
+  plazas, precio de partida medio con fecha de cálculo) y preguntas frecuentes.
+- Fichas de centro: /centros/{tipo}/{id}/{nombre} con dirección, plazas, precios por tipo de
+  habitación, ratio de personal, índice de transparencia y documentación oficial.
+- [Sitemap](https://www.inforesidencias.com/sitemap.xml) segmentado por familias.
+
+## Datos
+
+- Las cifras agregadas por zona indican siempre la fecha de cálculo y el nº de centros
+  sobre los que se calculan. El "precio de partida medio" se calcula sobre los centros que
+  publican precio; no es el precio medio de mercado.
+- Los datos estructurados (JSON-LD: NursingHome/LocalBusiness, ItemList, FAQPage,
+  BreadcrumbList) reflejan las mismas cifras que el contenido visible.

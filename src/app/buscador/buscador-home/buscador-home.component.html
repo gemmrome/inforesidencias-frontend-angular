@@ -1,0 +1,50 @@
+    <!-- Campos APILADOS (petición PM 2026-08-05): la tipología arriba y la caja de
+         texto sola en su fila, que es donde el usuario escribe frases largas. -->
+    <form action="/buscar" method="get">
+      <div class="mb-3">
+        <label for="home-tipologia" class="mb-1 block text-sm font-semibold">¿Qué buscas?</label>
+        <select
+          id="home-tipologia"
+          name="tipologia"
+          [value]="tipologia()"
+          (change)="tipologia.set($any($event.target).value)"
+          class="w-full rounded-md border border-borde-input bg-fondo px-3 py-2.5 text-texto"
+        >
+          @for (t of tipologias(); track t.slug) {
+            <option [value]="t.slug">{{ t.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <label for="busqueda-libre" class="mb-1 block text-sm font-semibold">¿Dónde?</label>
+      <ir-busqueda-libre [tipologia]="tipologia()" name="q" placeholder="Población, provincia, código postal o nombre del centro…" />
+
+      <!-- DOBLE VÍA con el mismo peso visual (decisión PM 2026-08-11): "Buscamos por
+           ti" PRIMERO, como en producción. Copy con la regla RP-01: el formulario
+           alimenta un matching automático, nunca se atribuye a la trabajadora social. -->
+      <div class="mt-3 grid grid-cols-2 gap-3">
+        <ir-enlace-proactiva
+          [tipologia]="tipologia()"
+          class="flex min-h-12 items-center justify-center gap-2 rounded-md bg-accion px-3 py-2.5 text-accion-texto hover:opacity-90"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span class="text-left leading-tight">
+            <span class="block font-semibold">Buscamos por ti</span>
+            <span class="hidden text-xs font-normal sm:block">Dinos qué necesitáis y te proponemos centros</span>
+          </span>
+        </ir-enlace-proactiva>
+        <button type="submit" class="flex min-h-12 items-center justify-center gap-2 rounded-md bg-accion px-3 py-2.5 text-accion-texto hover:opacity-90">
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <span class="text-left leading-tight">
+            <span class="block font-semibold">Buscas tú</span>
+            <span class="hidden text-xs font-normal sm:block">Explora los centros con precios reales</span>
+          </span>
+        </button>
+      </div>
+    </form>

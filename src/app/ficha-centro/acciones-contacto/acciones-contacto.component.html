@@ -1,0 +1,31 @@
+@if (telefono()) {
+  @if (visible()) {
+    <a
+      [href]="telefonoHref()"
+      aria-live="polite"
+      class="rounded-md border border-borde-input px-4 py-2.5 font-medium text-enlace hover:bg-superficie"
+    >
+      {{ telefono() }}
+    </a>
+  } @else {
+    <button
+      type="button"
+      (click)="verTelefono()"
+      class="rounded-md border border-borde-input px-4 py-2.5 font-medium hover:bg-superficie"
+    >
+      Ver teléfono
+    </button>
+  }
+}
+
+@if (web()) {
+  <a
+    [href]="web()"
+    target="_blank"
+    rel="noopener nofollow"
+    (click)="registrar('web')"
+    class="rounded-md border border-borde-input px-4 py-2.5 font-medium hover:bg-superficie"
+  >
+    Ver web
+  </a>
+}

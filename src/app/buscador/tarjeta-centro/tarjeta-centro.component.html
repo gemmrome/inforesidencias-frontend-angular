@@ -1,0 +1,80 @@
+    <article class="mb-4 flex gap-3 rounded-lg border border-borde bg-fondo p-3 sm:gap-4 sm:p-4">
+      @if (doc().imagen) {
+        <img
+          [src]="doc().imagen"
+          [alt]="doc().nombre"
+          width="192"
+          height="144"
+          sizes="(min-width: 640px) 192px, 112px"
+          [attr.loading]="prioridad() ? 'eager' : 'lazy'"
+          [attr.fetchpriority]="prioridad() ? 'high' : null"
+          class="aspect-[4/3] w-28 shrink-0 rounded-lg object-cover sm:w-48"
+        />
+      } @else {
+        <!-- Nunca foto de stock (docs/08 §6.1): hueco neutro con etiqueta honesta -->
+        <div
+          class="flex aspect-[4/3] w-28 shrink-0 items-center justify-center rounded-lg bg-superficie p-2 text-center text-xs text-texto-secundario sm:w-48 sm:p-3 sm:text-sm"
+        >
+          Este centro aún no ha publicado fotos
+        </div>
+      }
+      <div class="grow">
+        <h2 class="text-lg font-semibold leading-snug">
+          <a class="hover:underline" [href]="href()">{{ doc().nombre }}</a>
+        </h2>
+        <address class="mb-3 text-sm not-italic text-texto-secundario">
+          {{ doc().direccion }}, {{ doc().codigoPostal }} {{ doc().poblacion }} ({{ doc().provincia }})
+        </address>
+
+        <!-- Diferenciales de primer nivel. El precio se muestra SIEMPRE (decisión PM
+             2026-08-05): que un centro no lo publique también es información para quien
+             compara, y es coherente con ordenar por transparencia. -->
+        <div class="mb-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+          @if (doc().precioDesde !== null) {
+            <p class="text-lg font-bold">desde {{ numES(doc().precioDesde!) }} €/mes</p>
+          } @else {
+            <p class="text-lg font-medium text-texto-secundario">Precio no publicado</p>
+          }
+          @if (doc().transparencia !== null) {
+            <p class="rounded-full bg-superficie px-3 py-1 text-sm font-semibold">
+              Transparencia: {{ doc().transparencia }}%
+            </p>
+          }
+        </div>
+
+        <dl class="flex flex-wrap gap-x-6 gap-y-1 text-sm text-texto-secundario">
+          @if (doc().ratioPersonal !== null) {
+            <div>
+              <!-- El índice guarda el ratio ×10 (50 = «5,0 por cada 10»). "trabajadores",
+                   la misma palabra que la ficha (PM, 2026-08-14). -->
+              <dd class="inline font-semibold text-texto">{{ ratioLegible() }}</dd>
+              <dt class="inline"> trabajadores por cada 10 usuarios</dt>
+            </div>
+          }
+          @if (doc().plazas !== null) {
+            <div>
+              <dt class="inline">Plazas: </dt>
+              <dd class="inline font-semibold text-texto">{{ doc().plazas }}</dd>
+            </div>
+          }
+          @if (doc().fechaActualizacion) {
+            <div>
+              <dt class="inline">Actualizado: </dt>
+              <dd class="inline font-semibold text-texto">{{ fechaLegible() }}</dd>
+            </div>
+          }
+        </dl>
+
+        <div class="mt-3 flex flex-wrap gap-3">
+          <a [href]="href()" class="inline-block rounded-md bg-accion px-4 py-2.5 text-sm font-medium text-accion-texto hover:opacity-90">
+            Ver ficha y precios
+          </a>
+          <a
+            [href]="href() + '#contactar'"
+            class="inline-block rounded-md border border-borde-input px-4 py-2.5 text-sm font-medium hover:bg-superficie"
+          >
+            Contactar
+          </a>
+        </div>
+      </div>
+    </article>

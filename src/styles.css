@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/*
+ * Tokens del sistema de diseño (docs/08 §5) — contrastes verificados WCAG AA
+ * (cálculo 2026-08-05, no estimación). Los componentes consumen SOLO tokens
+ * semánticos (`text-texto`, `bg-superficie`…); el modo oscuro se define aquí
+ * una única vez, nunca por componente. Portado literalmente de
+ * src/app/globals.css (proyecto Next.js original).
+ */
+:root {
+  --fondo: #ffffff;
+  --superficie: #f0f4f8;
+  --texto: #102a43; /* 14,64:1 sobre fondo */
+  --texto-secundario: #486581; /* 6,08:1 — #627D98 falla AA como texto normal */
+  --borde: #d9e2ec;
+  --borde-input: #bcccdc;
+  /* Acción primaria VERDE (decisión PM 2026-08-05: el verde es el leitmotiv de la
+   * marca): relleno verde + texto navy = 6,05:1 ✓ AA. El verde con texto blanco de
+   * producción (2,4:1) queda descartado. */
+  --accion: #95b14d;
+  --accion-texto: #102a43; /* 6,05:1 */
+  --acento: #95b14d; /* SOLO decorativo/fondo en claro (2,42:1 sobre blanco) */
+  --acento-texto: #102a43; /* 6,05:1 sobre el verde */
+  --exito: #5f7b27; /* verde funcional claro: 4,83:1 */
+  --enlace: #486581;
+  --foco: #486581;
+  --error: #b42318; /* 6,3:1 sobre blanco */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Derivado de la marca, sin negro puro (docs/08 §4.7/§5.3) */
+    --fondo: #0d1826;
+    --superficie: #16263b;
+    --texto: #e3eaf2; /* 14,73:1 */
+    --texto-secundario: #a7b8cb; /* 8,81:1 */
+    --borde: #33475c; /* decorativo */
+    --borde-input: #5c7a9c; /* 4,01:1 fondo · 3,43:1 superficie (≥3:1) */
+    --accion: #a9c46a;
+    --accion-texto: #0d1826; /* 9,18:1 */
+    --acento: #a9c46a;
+    --acento-texto: #0d1826;
+    --exito: #a9c46a;
+    --enlace: #9dc1e4; /* 9,51:1 */
+    --foco: #9dc1e4;
+    --error: #f2a6a0; /* 8,9:1 sobre fondo oscuro */
+  }
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-texto: var(--texto);
+  --color-texto-secundario: var(--texto-secundario);
+  --color-borde: var(--borde);
+  --color-borde-input: var(--borde-input);
+  --color-accion: var(--accion);
+  --color-accion-texto: var(--accion-texto);
+  --color-acento: var(--acento);
+  --color-acento-texto: var(--acento-texto);
+  --color-exito: var(--exito);
+  --color-enlace: var(--enlace);
+  --color-error: var(--error);
+
+  /* Escala de marca (Blue Grey, docs/08 §5.1) — para superficies fijas como el
+   * hero navy, que es idéntico en ambos modos. */
+  --color-azul-50: #f0f4f8;
+  --color-azul-100: #d9e2ec;
+  --color-azul-200: #bcccdc;
+  --color-azul-300: #9fb3c8;
+  --color-azul-400: #829ab1;
+  --color-azul-500: #627d98;
+  --color-azul-600: #486581;
+  --color-azul-700: #334e68;
+  --color-azul-800: #243b53;
+  --color-azul-900: #102a43;
+  --color-verde-marca: #95b14d;
+  --color-verde-300: #a9c46a;
+  --color-verde-700: #5f7b27;
+
+  /* Tipografía (docs/08 §5.4): system stack — la identidad visible de producción ya
+   * es system stack (Cabin se carga y no se usa, CSS-01). Cero peticiones. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-sans);
+  /* 17 px: compromiso GOV.UK (19) / densidad de directorio; nunca <16 (docs/08 §5.4) */
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visible en todo control (docs/08 §5.5) */
+:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 2px;
+}
+
+/*
+ * Galería de la ficha con pestañas — el conmutador, CERO JavaScript. Componente:
+ * `ficha/galeria-pestanas` (pendiente de portar), que explica por qué radios y no el
+ * patrón ARIA de tabs.
+ *
+ * Vive aquí y no en clases utilitarias porque `~` (hermano general) necesita que los
+ * radios precedan a los paneles, y eso no se expresa con las variantes `peer-*` de
+ * Tailwind, que solo alcanzan al hermano inmediato.
+ *
+ * Las tres claves se escriben a mano a propósito: `ClavePestana` es una unión cerrada
+ * de tres valores. Si algún día se añade una cuarta pestaña, hay que añadirla aquí — y
+ * que el panel no aparezca es un fallo ruidoso, no silencioso.
+ */
+.galeria-pestanas [data-panel] {
+  display: none;
+}
+.galeria-pestanas input[data-pestana="centro"]:checked ~ [data-panel="centro"],
+.galeria-pestanas input[data-pestana="comida"]:checked ~ [data-panel="comida"],
+.galeria-pestanas input[data-pestana="videos"]:checked ~ [data-panel="videos"] {
+  display: block;
+}
+
+/* La pestaña marcada se despega del borde inferior y toma el color del texto principal. */
+.galeria-pestanas input[data-pestana="centro"]:checked ~ .galeria-barra label[data-pestana="centro"],
+.galeria-pestanas input[data-pestana="comida"]:checked ~ .galeria-barra label[data-pestana="comida"],
+.galeria-pestanas input[data-pestana="videos"]:checked ~ .galeria-barra label[data-pestana="videos"] {
+  border-color: var(--borde);
+  border-bottom-color: var(--fondo);
+  background: var(--fondo);
+  color: var(--texto);
+  font-weight: 500;
+}
+
+/* El radio está oculto visualmente pero SÍ recibe el foco: el anillo se pinta sobre su
+   etiqueta, o el teclado navegaría a ciegas. */
+.galeria-pestanas input[data-pestana="centro"]:focus-visible ~ .galeria-barra label[data-pestana="centro"],
+.galeria-pestanas input[data-pestana="comida"]:focus-visible ~ .galeria-barra label[data-pestana="comida"],
+.galeria-pestanas input[data-pestana="videos"]:focus-visible ~ .galeria-barra label[data-pestana="videos"] {
+  outline: 2px solid var(--foco);
+  outline-offset: 2px;
+}

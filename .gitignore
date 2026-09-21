@@ -1,0 +1,27 @@
+# Dependencias
+/node_modules
+
+# Compilación
+/dist
+/out-tsc
+/.angular/cache
+
+# Índice de centros (caché de la API, no es fuente de verdad — igual que en el
+# proyecto Next.js original: se regenera con `npm run sync:full`).
+/data/*.json
+
+# Entorno
+.env
+.env.local
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*

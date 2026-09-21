@@ -1,0 +1,163 @@
+    @if (datos(); as d) {
+      <!-- Hero con la foto de marca como fondo a todo el ancho (petición PM
+           2026-08-05): la persona a la derecha, el texto sobre la zona clara. -->
+      <section class="relative border-b border-borde bg-azul-50">
+        <img src="/hero-inforesidencias.jpg" alt="" aria-hidden="true" fetchpriority="high" class="absolute inset-0 h-full w-full object-cover object-right" />
+        <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/75 to-white/10"></div>
+        <div class="relative mx-auto max-w-5xl px-4 py-6 sm:py-14">
+          <div class="max-w-2xl">
+            <h1 class="mb-2 text-2xl font-bold text-azul-900 sm:mb-3 sm:text-4xl">
+              Encontrar <span class="text-verde-700">una residencia</span> nunca fue tan fácil
+            </h1>
+            <p class="mb-4 text-base text-azul-700 sm:mb-8 sm:text-lg">
+              Información de {{ numES(d.totalDocs) }} centros para mayores, con precios reales e índice de transparencia, para
+              ayudarte a elegir con datos.
+            </p>
+            <div class="rounded-lg border border-borde bg-fondo p-3 shadow-md sm:p-4">
+              <ir-buscador-home [tipologias]="tipologiasBuscador()" />
+            </div>
+            <p class="mt-3 text-sm text-azul-700 sm:mt-4 sm:text-base">
+              ¿Prefieres hablar con alguien? Llama al
+              <a href="tel:+34881505104" class="font-semibold text-azul-900 underline">881 505 104</a>
+              — te atiende una trabajadora social.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <main class="mx-auto max-w-5xl px-4">
+        <!-- Banda de cifras reales (§1.3): cada cifra enlaza a su evidencia. -->
+        <section aria-label="Inforesidencias en cifras" class="grid grid-cols-2 gap-3 border-b border-borde py-5 sm:gap-4 sm:py-8 lg:grid-cols-4">
+          <a routerLink="/centros/buscador/directorio" class="group flex items-center gap-3">
+            <span aria-hidden="true" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-superficie text-verde-700">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18" /><path d="M5 21V7l7-4 7 4v14" /><path d="M9 21v-4h6v4" /><path d="M9 10h.01M15 10h.01M9 14h.01M15 14h.01" /></svg>
+            </span>
+            <span>
+              <span class="block text-xl font-bold leading-tight sm:text-2xl">{{ numES(d.totalDocs) }}</span>
+              <span class="block text-xs text-texto-secundario group-hover:underline sm:text-sm">centros a tu disposición</span>
+            </span>
+          </a>
+          <a routerLink="/residencias-mas-transparentes" class="group flex items-center gap-3">
+            <span aria-hidden="true" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-superficie text-verde-700">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" /></svg>
+            </span>
+            <span>
+              <span class="block text-xl font-bold leading-tight sm:text-2xl">{{ numES(d.conTransparencia) }}</span>
+              <span class="block text-xs text-texto-secundario group-hover:underline sm:text-sm">enseñan sus datos verificados</span>
+            </span>
+          </a>
+          <a routerLink="/precios-residencias" class="group flex items-center gap-3">
+            <span aria-hidden="true" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-superficie text-verde-700">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7a6 6 0 1 0 0 10" /><path d="M4 10h8M4 14h8" /></svg>
+            </span>
+            <span>
+              <span class="block text-xl font-bold leading-tight sm:text-2xl">50</span>
+              <span class="block text-xs text-texto-secundario group-hover:underline sm:text-sm">provincias con precios reales</span>
+            </span>
+          </a>
+          <div class="flex items-center gap-3">
+            <span aria-hidden="true" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-superficie text-verde-700">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6.5Z" /></svg>
+            </span>
+            <span>
+              <span class="block text-xl font-bold leading-tight sm:text-2xl">{{ d.anosAyudando }} años</span>
+              <span class="block text-xs text-texto-secundario sm:text-sm">ayudando a las familias (desde {{ d.anioInicioAyuda }})</span>
+            </span>
+          </div>
+        </section>
+
+        <!-- Tipologías (§1.2): las rutas del buscador -->
+        <section aria-labelledby="h-tipologias" class="py-8">
+          <h2 id="h-tipologias" class="mb-4 text-2xl font-bold">¿Qué tipo de centro necesitas?</h2>
+          <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @for (t of d.tipologiasHome; track t.slug) {
+              <li>
+                <a [routerLink]="'/centros/buscador/' + t.slug" class="block h-full rounded-lg border border-borde p-4 hover:border-borde-input hover:bg-superficie">
+                  <p class="font-semibold">{{ t.nombre }}</p>
+                  <p class="text-sm text-texto-secundario">{{ numES(t.centros) }} centros</p>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Escaparate de transparencia (§1.5): el diferencial, con datos reales -->
+        <section aria-labelledby="h-transparentes" class="border-t border-borde py-8">
+          <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="h-transparentes" class="text-2xl font-bold">Las residencias más transparentes</h2>
+            <a routerLink="/residencias-mas-transparentes" class="text-enlace underline">Ver el ranking completo</a>
+          </div>
+          <p class="mb-4 max-w-3xl text-texto-secundario">
+            Ordenadas solo por su índice de transparencia — ser cliente de Inforesidencias no afecta al ranking.
+          </p>
+          <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @for (c of d.topTransparentes; track c.id) {
+              <li>
+                <a [href]="pathname(c.url)" class="block h-full rounded-lg border border-borde p-4 hover:border-borde-input hover:bg-superficie">
+                  <p class="mb-1 rounded-full bg-superficie px-3 py-1 text-center text-sm font-semibold">Transparencia: {{ c.transparencia }}%</p>
+                  <p class="font-semibold leading-snug">{{ c.nombre }}</p>
+                  <p class="text-sm text-texto-secundario">{{ c.poblacion }} ({{ c.provincia }})</p>
+                  @if (c.precioDesde !== null) {
+                    <p class="mt-1 font-bold">desde {{ numES(c.precioDesde) }} €/mes</p>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Familias insignia (§1.6, curadas B2C) -->
+        <section aria-labelledby="h-familias" class="border-t border-borde py-8">
+          <h2 id="h-familias" class="mb-4 text-2xl font-bold">Guías para elegir con datos</h2>
+          <div class="mb-4 grid gap-4 sm:grid-cols-2">
+            <a routerLink="/precios-residencias" class="block rounded-lg bg-superficie p-5 hover:opacity-90">
+              <p class="text-lg font-bold">¿Cuánto cuesta una residencia?</p>
+              <p class="text-sm text-texto-secundario">Precios reales por provincia y municipio, con metodología visible.</p>
+            </a>
+            <a routerLink="/residencias-mas-transparentes" class="block rounded-lg bg-superficie p-5 hover:opacity-90">
+              <p class="text-lg font-bold">Residencias más transparentes</p>
+              <p class="text-sm text-texto-secundario">El ranking por el índice de transparencia, nacional y por provincia.</p>
+            </a>
+          </div>
+          <ul class="flex flex-wrap gap-2">
+            @for (f of d.familiasListado; track f.slug) {
+              <li>
+                <a [routerLink]="'/' + f.slug" class="inline-block rounded-full border border-borde-input px-4 py-2 text-sm font-medium hover:bg-superficie">
+                  {{ f.fraseCorta }}
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Distribuidor geográfico (CCAA + provincias principales) -->
+        <section aria-labelledby="h-geografia" class="border-t border-borde py-8">
+          <h2 id="h-geografia" class="mb-4 text-2xl font-bold">Residencias por comunidad autónoma</h2>
+          <ul class="mb-6 flex flex-wrap gap-2">
+            @for (c of d.ccaaOrdenadas; track c.slug) {
+              <li>
+                <a [routerLink]="'/centros/buscador/residencias/' + c.slug" class="inline-block rounded-full border border-borde-input px-4 py-2 text-sm font-medium hover:bg-superficie">
+                  {{ c.nombre }} <span class="text-texto-secundario">({{ c.n }})</span>
+                </a>
+              </li>
+            }
+          </ul>
+          <h3 class="mb-3 text-lg font-semibold">Provincias con más centros</h3>
+          <ul class="grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-3 lg:grid-cols-4">
+            @for (p of d.provinciasTop; track p.slug) {
+              <li>
+                <a [routerLink]="'/centros/buscador/residencias/' + p.ccaa + '/' + p.slug" class="inline-block py-1.5 text-enlace hover:underline">
+                  Residencias en {{ p.nombre }} <span class="text-texto-secundario">({{ p.n }})</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Asesoramiento único + formulario proactivo (§2.3) -->
+        <section id="te-asesoramos" aria-labelledby="h-asesoramiento" class="border-t border-borde py-8">
+          <h2 id="h-asesoramiento" class="sr-only">Ayuda gratuita para elegir centro</h2>
+          <ir-bloque-asesoramiento tipologia="1" />
+        </section>
+      </main>
+    }
